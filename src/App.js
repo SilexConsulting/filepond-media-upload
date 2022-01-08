@@ -3,6 +3,7 @@ import './App.css';
 import S3FilePond from './componenets/media/S3FilePond';
 import Login from './componenets/Login';
 import api from './api';
+import DemoForm from './componenets/forms/DemoForm';
 
 function App() {
   const API_ENDPOINT = '/api/media/getUrlForFileUpload';
@@ -29,9 +30,10 @@ function App() {
   return (
     <div className="App">
       <Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-      {isLoggedIn &&
+      {isLoggedIn && <>
           <S3FilePond imageCropAspectRatio={0} presignedUrlEndpoint={API_ENDPOINT} initialFiles={initialFiles}/>
-      }
+          <DemoForm/>
+      </>}
     </div>
   );
 }
