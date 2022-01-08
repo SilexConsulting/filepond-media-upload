@@ -16,11 +16,13 @@ function App() {
   }];
 
 
-  useEffect( async () => {
-    const resp = await api.get('/api/users/me');
-    if (resp.data) {
-      setIsLoggedIn(true)
-    }
+  useEffect( () => {
+    (async () => {
+      const resp = await api.get('/api/users/me');
+      if (resp.data) {
+        setIsLoggedIn(true);
+      }
+    })();
   }, []);
 
 

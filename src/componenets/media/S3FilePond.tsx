@@ -12,7 +12,6 @@ import {
   locale_en_gb,
   createDefaultImageReader,
   createDefaultImageWriter,
-  createDefaultShapePreprocessor,
 
   //helpers
   blobToFile,
@@ -28,9 +27,6 @@ import {
   plugin_filter_locale_en_gb,
   plugin_filter_defaults,
   plugin_annotate,
-  plugin_annotate_locale_en_gb,
-  markup_editor_defaults,
-  markup_editor_locale_en_gb,
   legacyDataToImageState,
   openEditor,
   processImage,
@@ -67,24 +63,6 @@ const imageReader = createDefaultImageReader({
   },
 });
 
-const editorDefaults = {
-  utils: ['crop', 'finetune', 'filter', 'annotate'],
-  imageReader: imageReader,
-  imageWriter: createDefaultImageWriter(),
-  shapePreprocessor: createDefaultShapePreprocessor(),
-  ...plugin_finetune_defaults,
-  ...plugin_filter_defaults,
-  ...markup_editor_defaults,
-  locale: {
-    ...locale_en_gb,
-    ...plugin_crop_locale_en_gb,
-    ...plugin_finetune_locale_en_gb,
-    ...plugin_filter_locale_en_gb,
-    ...plugin_annotate_locale_en_gb,
-    ...markup_editor_locale_en_gb,
-  },
-};
-
 interface OwnProps {
   imageCropAspectRatio: number,
   presignedUrlEndpoint: string,
@@ -104,7 +82,7 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
       const imageUrl = new URL( initialFiles[0].source)
       setFilename(imageUrl.pathname);
     }
-  }, []);
+  }, [initialFiles]);
 
   const filepondEditorSettings =  {
     legacyDataToImageState: legacyDataToImageState,
@@ -222,11 +200,11 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
       onupdatefiles={fileItems => {
         // Set currently active file objects to this.state
         setFiles(fileItems.map(fileItem => fileItem.file));
-        if (fileItems.length == 0)
+        if (fileItems.length === 0)
           setFilename('');
       }}>
     </FilePond>
-    {filename && <img width={"100%"} src={ `https://s3-media-upload-globalimpact-world.s3-accelerate.amazonaws.com${filename}` } />}
+    {filename && <img alt=""  width={"100%"} src={ `https://s3-media-upload-globalimpact-world.s3-accelerate.amazonaws.com${filename}` } />}
 
   </div>
 );

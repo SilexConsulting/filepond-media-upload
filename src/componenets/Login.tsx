@@ -28,12 +28,15 @@ const Login: React.FC<OwnProps> = (props) => {
     setIsLoggedIn(false)
   }
 
-  useEffect( async () => {
-    const resp = await api.get('/api/users/me');
-    if (resp.data) {
-      setIsLoggedIn(true)
-    }
-  }, []);
+  useEffect( () => {
+
+    (async () => {
+      const resp = await api.get('/api/users/me');
+      if (resp.data) {
+        setIsLoggedIn(true)
+      }
+    })()
+  }, [setIsLoggedIn]);
 
   return (
   <>
