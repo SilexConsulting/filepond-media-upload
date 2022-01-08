@@ -79,13 +79,12 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
   } = props;
   const [filename, setFilename] = useState();
   const [files, setFiles] = useState();
-  const  handleInit = () => {
-    console.log('FilePond instance has initialised');
-  }
+  const [baseUrl, setBaseUrl] = useState();
   useEffect(() => {
     setFiles(initialFiles);
     if ( initialFiles.length >0 ) {
       const imageUrl = new URL( initialFiles[0].source)
+      setBaseUrl(imageUrl.origin);
       setFilename(imageUrl.pathname);
     }
   },
@@ -93,12 +92,12 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
   // eslint-disable-next-line
   []);
 
-  const handleFileChanged = (fileId) => {
-    setFilename(`/${fileId}`);;
-    onChange(fileId);
+  const handleFileChanged = (fileData) => {
+    setFilename(`/${fileData.fileId}`);;
+    onChange(fileData);
   }
 
-  const filepondEditorSettings =  {
+  const filepondEditorSettings = {
     legacyDataToImageState: legacyDataToImageState,
     createEditor: openEditor,
     imageReader: [() => imageReader],
@@ -150,29 +149,24 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
         process: async function(fieldName, file, metadata, load, error, progress, abort) {
           // Get a presigned URL from the API
           const response = await api.get(presignedUrlEndpoint)
-
-          console.log('Response: ', response.data);
-
-          console.log('Uploading: ', file.name);
           let reader = new FileReader();
           reader.onload = async (e) => {
             const upload_url = response.data.uploadURL;
-            console.log('Uploading to: ', upload_url);
-
             try {
-              console.log(`Uploading ${e.target.result.byteLength} bytes to s3`);
               const result = await axios.put(
                 upload_url, e.target.result,{
                   headers: { 'Content-Type': 'image/*' },
                   timeout: 9999999,
                   onUploadProgress: progressEvent => progress(true, progressEvent.loaded,  progressEvent.total)
                 });
-              console.log(result);
               // pass file unique id back to filepond
-              handleFileChanged(response.data.filename);
+              const url = new URL(response.data.uploadURL);
+              setBaseUrl(url.origin);
+              handleFileChanged({fileId: response.data.filename, fileType: file.type, name: file.name});
               load(response.data.filename);
             } catch (e) {
-              console.log(e)
+              //perhaps this needs some error logging
+              error(e);
             }
           }
           if (/heic|heif/.test(file.type)) {
@@ -200,25 +194,17 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
           })
         },
         revert: (uniqueFileId, load, error) => {
-          // Should remove the earlier created temp file here
-          // ...
-
-          // Can call the error method if something is wrong, should exit after
-          //error('oh my goodness');
-
-          // Should call the load method when done, no parameters required
           load();
         },
       }}
-      oninit={() => handleInit() }
       onupdatefiles={fileItems => {
         // Set currently active file objects to this.state
         setFiles(fileItems.map(fileItem => fileItem.file));
         if (fileItems.length === 0)
-          handleFileChanged('');
+          handleFileChanged({});
       }}>
     </FilePond>
-    {filename && <img alt=""  width={"100%"} src={ `https://s3-media-upload-globalimpact-world.s3-accelerate.amazonaws.com${filename}` } />}
+    {filename && <img alt=""  width={"100%"} src={ `${baseUrl}${filename}` } />}
 
   </div>
 );

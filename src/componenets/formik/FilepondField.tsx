@@ -23,12 +23,8 @@ const FilepondField: React.FC<OwnProps> = (props) => {
     }
   }];
 
-  const handleFileChanged = (fileId) => {
-    console.log('File change event fired');
-    const e = new Event('change');
-    e.target = {value: fileId}
-    field.onChange(e)
-    console.log(e);
+  const handleFileChanged = (fileData) => {
+    props.form.setFieldValue(field.name, {fileData});
   }
 
   return (
