@@ -1,20 +1,21 @@
 import React from 'react';
 import S3FilePond from "../media/S3FilePond";
+import { useFormikContext } from 'formik';
 
 interface OwnProps {
   preSignedUrlEndpoint: string,
   s3BaseUrl: string,
-  fileId: string,
-  fileType: string
+  field: FormikField,
+  form: FormikForm,
 }
 const FilepondField: React.FC<OwnProps> = (props) => {
   const {
     preSignedUrlEndpoint,
     s3BaseUrl,
-    fileId,
-    //fileType
+    field,
+    form,
   } = props;
-  const url = new URL(fileId, s3BaseUrl);
+  const url = new URL(field.value.fileId, s3BaseUrl);
   const initialFiles = [{
     source: `${url.protocol}//${url.host}${url.pathname}`,
     options: {
@@ -22,8 +23,11 @@ const FilepondField: React.FC<OwnProps> = (props) => {
     }
   }];
 
-  const handleFileChanged = (e) => {
+  const handleFileChanged = (fileId) => {
     console.log('File change event fired');
+    const e = new Event('change');
+    e.target = {value: fileId}
+    field.onChange(e)
     console.log(e);
   }
 
