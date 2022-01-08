@@ -25,7 +25,7 @@ const InnerForm: React.FC<OwnProps> = (props) => {
   return (
       <form onSubmit={handleSubmit}>
         <FilepondField s3BaseUrl={S3_BASE_URL} fileId={fileId} fileType={fileType} preSignedUrlEndpoint={PRE_SIGNED_URL_ENDPOINT}/>
-        <Field type="email" name="email" placeholder="Email" />
+        <Field type={"email"} name={"email"} placeholder={"Email"} />
         <Field type={"text"} name={"description"} placeholder={"Description"} />
         <input name={'Submit'} type={'submit'}/>
 
