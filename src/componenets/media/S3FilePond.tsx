@@ -67,10 +67,16 @@ interface OwnProps {
   imageCropAspectRatio: number,
   presignedUrlEndpoint: string,
   initialFiles: Array<any>,
+  onChange: (e: any) => {}
 }
 
 const S3FilePond: React.FC<OwnProps> = (props) => {
-  const {imageCropAspectRatio, presignedUrlEndpoint, initialFiles} = props;
+  const {
+    imageCropAspectRatio,
+    presignedUrlEndpoint,
+    initialFiles,
+    onChange
+  } = props;
   const [filename, setFilename] = useState();
   const [files, setFiles] = useState();
   const  handleInit = () => {
@@ -82,7 +88,15 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
       const imageUrl = new URL( initialFiles[0].source)
       setFilename(imageUrl.pathname);
     }
-  }, [initialFiles]);
+  },
+  // We only want the original file to render the first time
+  // eslint-disable-next-line
+  []);
+
+  const handleFileChanged = (fileId) => {
+    setFilename(`/${fileId}`);;
+    onChange(fileId);
+  }
 
   const filepondEditorSettings =  {
     legacyDataToImageState: legacyDataToImageState,
@@ -155,7 +169,7 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
                 });
               console.log(result);
               // pass file unique id back to filepond
-              setFilename(`/${response.data.filename}`);
+              handleFileChanged(response.data.filename);
               load(response.data.filename);
             } catch (e) {
               console.log(e)
@@ -201,7 +215,7 @@ const S3FilePond: React.FC<OwnProps> = (props) => {
         // Set currently active file objects to this.state
         setFiles(fileItems.map(fileItem => fileItem.file));
         if (fileItems.length === 0)
-          setFilename('');
+          handleFileChanged('');
       }}>
     </FilePond>
     {filename && <img alt=""  width={"100%"} src={ `https://s3-media-upload-globalimpact-world.s3-accelerate.amazonaws.com${filename}` } />}

@@ -22,8 +22,13 @@ const FilepondField: React.FC<OwnProps> = (props) => {
     }
   }];
 
+  const handleFileChanged = (e) => {
+    console.log('File change event fired');
+    console.log(e);
+  }
+
   return (
-  <S3FilePond imageCropAspectRatio={0} presignedUrlEndpoint={preSignedUrlEndpoint} initialFiles={initialFiles}/>
+  <S3FilePond imageCropAspectRatio={0} presignedUrlEndpoint={preSignedUrlEndpoint} initialFiles={initialFiles} onChange={handleFileChanged}/>
   );
 }
 
