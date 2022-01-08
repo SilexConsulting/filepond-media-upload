@@ -16,6 +16,7 @@
     "filepond-plugin-image-editor": "file:local_modules/filepond-plugin-image-editor",
     "filepond-plugin-image-preview": "^4.6.6",
     "filepond-plugin-media-preview": "^1.0.9",
+    "formik": "^2.2.9",
     "heic-convert": "^1.2.4",
     "heic2any": "0.0.3",
     "pintura": "file:local_modules/pintura",
