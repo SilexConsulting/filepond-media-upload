@@ -1,6 +1,5 @@
 import React, {useEffect,  useState} from 'react';
 import './App.css';
-import S3FilePond from './componenets/media/S3FilePond';
 import Login from './componenets/Login';
 import api from './api';
 import DemoForm from './componenets/forms/DemoForm';

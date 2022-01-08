@@ -1,21 +1,29 @@
-import React, {useState} from 'react';
+import React from 'react';
 import S3FilePond from "../media/S3FilePond";
 
 interface OwnProps {
-
+  preSignedUrlEndpoint: string,
+  s3BaseUrl: string,
+  fileId: string,
+  fileType: string
 }
 const FilepondField: React.FC<OwnProps> = (props) => {
-  const API_ENDPOINT = '/api/media/getUrlForFileUpload';
-  const url = `https://s3-media-upload-globalimpact-world.s3-accelerate.amazonaws.com/uat/39f87176-9391-40d3-bfbd-4c72d0541c27`
+  const {
+    preSignedUrlEndpoint,
+    s3BaseUrl,
+    fileId,
+    //fileType
+  } = props;
+  const url = new URL(fileId, s3BaseUrl);
   const initialFiles = [{
-    source: url,
+    source: `${url.protocol}//${url.host}${url.pathname}`,
     options: {
       type: "local"
     }
   }];
 
   return (
-  <S3FilePond imageCropAspectRatio={0} presignedUrlEndpoint={API_ENDPOINT} initialFiles={initialFiles}/>
+  <S3FilePond imageCropAspectRatio={0} presignedUrlEndpoint={preSignedUrlEndpoint} initialFiles={initialFiles}/>
   );
 }
 
