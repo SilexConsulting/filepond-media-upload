@@ -1,6 +1,5 @@
 import React from 'react';
 import S3FilePond from "../media/S3FilePond";
-import { useFormikContext } from 'formik';
 
 interface OwnProps {
   preSignedUrlEndpoint: string,
@@ -24,7 +23,7 @@ const FilepondField: React.FC<OwnProps> = (props) => {
   }];
 
   const handleFileChanged = (fileData) => {
-    props.form.setFieldValue(field.name, {fileData});
+    form.setFieldValue(field.name, {fileData});
   }
 
   return (
